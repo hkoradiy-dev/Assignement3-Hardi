@@ -58,12 +58,11 @@ BAD ROW:
 T000007,D147,19,8,2026-09-29 01:52:26,2026-09-29 02:10:03,4.9,,app
 
 BAD ROW:
+T001201,D212,15,12,2026-09-21 08:37:25,2026-09-21 09:06:07,7.57,"12,40",app
+BAD ROW:
 T000029,D208,15,7,2026-09-12 08:06:16,2026-09-12 07:55:48,2.89,11.70,card
 
-BAD ROW:
-T000039,D041,6,10,2026-09-11 01:57:51,2026-09-11 01:20:24,10.36,35.95,card
-
-The first row has a missing fare. The second and third rows have a drop-off time earlier than the pickup time.
+The first row has a missing fare, the second row contains a non-numeric fare (`12,40`), and the third row has a drop-off timestamp earlier than its pickup timestamp. These examples demonstrate both fare-validation rules and the timestamp-validation rule.
 ```
 
 ---
@@ -88,7 +87,7 @@ First ten rows, and one sentence on what they show:
 |2026-09-01|9      |Ballantyne     |136  |2735.58|
 |2026-09-01|10     |SouthPark      |177  |3307.18|
 
---> These rows show the number of valid trips and the total fare revenue for each pickup zone on each day. The result is ordered by day and then zone_id.
+--> On September 1, Uptown Center recorded the highest number of trips among the displayed zones, with 362 trips and $6,984.71 in revenue. Fourth Ward followed with 282 trips, while Ballantyne had the lowest trip count among these ten zones, with 136 trips. This shows that trip activity and revenue varied considerably across pickup zones on the same day.
 
 ```
 
@@ -112,7 +111,7 @@ First ten rows, and one sentence on what they show:
 |D009     |2026-09-13|20   |
 |D010     |2026-09-01|23   |
 
----> The result identifies the busiest day for each driver based on the number of valid trips. The window function orders each driver's days by trip count in descending order and then by day in ascending order, so the earliest day is selected when there is a tie.
+---> Among the first ten drivers, D008 had the highest number of trips on their busiest day, completing 25 trips on September 25. D003 had the lowest count among these drivers, with 18 trips on September 1. The results show that the busiest day and daily trip volume vary between drivers.
 ```
 
 ## Part 3: activity per borough (Spark SQL)
@@ -148,7 +147,7 @@ ORDER BY revenue DESC
 |West   |11568|228833.68|5.36           |
 +-------+-----+---------+---------------+
 
---> The query joins valid trips with the zone information using pickup_zone = zone_id, groups the data by borough, and calculates the number of trips, total revenue, and average distance for each borough. The final result is ordered by revenue in descending order.
+--> Central had the highest activity, accounting for 39,894 trips, or approximately 41.2% of all valid trips, and generating $788,410.95 in revenue. South ranked second with 17,119 trips and $339,132.55 in revenue. West had the lowest activity, with 11,568 trips and $228,833.68 in revenue. Average trip distances were relatively similar across all five boroughs, ranging from 5.36 km to 5.41 km.
 ```
 
 ---
